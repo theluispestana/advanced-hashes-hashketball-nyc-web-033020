@@ -105,3 +105,18 @@ def winning_team
     data[:away][:team_name]
   end
 end
+
+def player_with_longest_name
+  data = game_hash()
+
+  all_players = all_players_sorted(data, "name")
+  all_players[-1][:player_name]
+end
+
+def long_name_steals_a_ton?
+  data = game_hash()
+
+  all_players_by_name = all_players_sorted(data, "name")
+  all_players_by_steals = all_players_sorted(data, :steals)
+  all_players_by_name[-1] == all_players_by_steals[-1]
+end
