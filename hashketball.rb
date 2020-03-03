@@ -65,18 +65,43 @@ def player_stats(player_name)
   stats
 end
 
+def all_players_sorted(data, sort_by)
+  all_players = []
+  all_players.push(data[:home][:players], data[:away][:players])
+  if sort_by == "name"
+    all_players.flatten!.sort_by!{ |player| player[:player_name].length }
+  else
+    all_players.flatten!.sort_by!{ |player| player[sort_by] }
+  end
+end
+
 def big_shoe_rebounds
   data = game_hash()
 
+  all_players = all_players_sorted(data, :shoe)
+  all_players[-1][:rebounds]
+end
+
+def most_points_scored
+  data = game_hash()
+
+  all_players = all_players_sorted(data, :points)
+  all_players[-1][:player_name]
+end
+
+def winning_team
+  data = game_hash()
   home_players = data[:home][:players]
+  home_points = 0
+  home_players.each { |player| home_points += player[:number] }
+
   away_players = data[:away][:players]
+  away_points = 0
+  away_players.each { |player| away_points += player[:number] }
 
-  home_players.sort_by! { |player| player[:shoe] }
-  away_players.sort_by! { |player| player[:shoe] }
-
-  if home_players[-1][:shoe] > away_players[-1][:shoe]
-    return home_players[-1][:rebounds]
+  if home_points > away_points
+    data[:home][:team_name]
   else
-    away_players[-1][:rebounds]
+    data[:away][:team_name]
   end
 end
